@@ -10,27 +10,23 @@ import org.springframework.http.HttpHeaders
 @SpringBootApplication
 class ReservationClientApplication {
 
-	@Bean
-	fun gateway(rlb: RouteLocatorBuilder): RouteLocator {
-		return rlb
-				.routes()
-				.route( {
-					routeSpect ->
-					routeSpect
-							.path("/proxy").and().host("*.spring.io")
-							.filters( {
-								filterSpec ->
-										filterSpec
-												.setPath("/reservations")
-												.addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
-							})
-							.uri("http://localhost:8080")
-				})
-				.build()
-	}
-
+    @Bean
+    fun gateway(rlb: RouteLocatorBuilder) = rlb
+            .routes()
+            .route({ routeSpect ->
+                routeSpect
+                        .path("/proxy").and().host("*.spring.io")
+                        .filters({ filterSpec ->
+                            filterSpec
+                                    .setPath("/reservations")
+                                    .addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+                        })
+                        .uri("http://localhost:8080")
+            })
+            .build()
 }
 
+
 fun main(args: Array<String>) {
-	runApplication<ReservationClientApplication>(*args)
+    runApplication<ReservationClientApplication>(*args)
 }
