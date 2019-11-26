@@ -2,6 +2,7 @@ package io.zwt.reservationclient
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.cloud.gateway.route.builder.filters
@@ -13,13 +14,19 @@ import org.springframework.http.HttpHeaders
 class ReservationClientApplication {
 
     @Bean
-    fun gateway(rlb: RouteLocatorBuilder) = rlb .routes{
+    fun redisRateLimiter() = RedisRateLimiter(5, 7)
+
+    @Bean
+    fun gateway(rlb: RouteLocatorBuilder) = rlb.routes {
 
         route {
             path("/proxy") and host("*.spring.io")
             filters {
                 setPath("/reservations")
                 addRequestHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+                requestRateLimiter {
+
+                }
             }
             uri("http://localhost:8080")
         }
