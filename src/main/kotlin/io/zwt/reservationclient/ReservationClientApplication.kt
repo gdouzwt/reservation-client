@@ -15,7 +15,7 @@ class ReservationClientApplication {
     fun gateway(rlb: RouteLocatorBuilder) = rlb .routes{
 
         route {
-            path("/proxy").and().host("*.spring.io")
+            path("/proxy") and host("*.spring.io")
         }
     }
             .route { it
