@@ -32,8 +32,10 @@ class ReservationClientApplication {
 
                     it.rateLimiter = redisRateLimiter()
                     it.keyResolver = KeyResolver {
-                        val publisherName: Publisher<String> = it.getPrincipal<Principal>().map { it.name }
-                        Mono.just("maria la chiave!")
+                        return@KeyResolver it
+                                .getPrincipal<Principal>()
+                                .map { it.name }
+                                .switchIfEmpty(Mono.empty())
                     }
                 }
             }
