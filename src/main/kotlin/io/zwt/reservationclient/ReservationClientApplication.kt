@@ -7,6 +7,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.cloud.gateway.route.builder.filters
 import org.springframework.cloud.gateway.route.builder.routes
 import org.springframework.context.annotation.Bean
+import org.springframework.context.support.beans
 import org.springframework.http.HttpHeaders
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -34,11 +35,9 @@ class ReservationClientApplication {
             User.withDefaultPasswordEncoder().username("rwinch").password("pw").roles("ADMIN", "USER").build()
     )
 
-    @Bean
-    fun redisRateLimiter() = RedisRateLimiter(5, 7)
 
     @Bean
-    fun gateway(rlb: RouteLocatorBuilder) = rlb.routes {
+    fun gateway(rlb: RouteLocatorBuilder, redisRateLimiter: RedisRateLimiter) = rlb.routes {
 
         route {
             path("/proxy") and host("*.spring.io")
@@ -46,7 +45,7 @@ class ReservationClientApplication {
                 setPath("/reservations")
                 addRequestHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
                 requestRateLimiter {
-                    it.rateLimiter = redisRateLimiter()
+                    it.rateLimiter = redisRateLimiter
                 }
             }
             uri("http://localhost:8080")
@@ -56,5 +55,14 @@ class ReservationClientApplication {
 
 
 fun main(args: Array<String>) {
-    runApplication<ReservationClientApplication>(*args)
+    runApplication<ReservationClientApplication>(*args) {
+
+        val context = beans {
+//            if (Math.random() > .5)
+            bean {
+                RedisRateLimiter(5, 7)
+            }
+        }
+        addInitializers(context)
+    }
 }
