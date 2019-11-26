@@ -15,8 +15,8 @@ class ReservationClientApplication {
             .routes()
             .route { it
                     .path("/proxy").and().host("*.spring.io")
-                        .filters { filterSpec ->
-                            filterSpec
+                        .filters {
+                            it
                                     .setPath("/reservations")
                                     .addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
                         }
