@@ -2,16 +2,24 @@ package io.zwt.reservationclient
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.cloud.gateway.filter.ratelimit.PrincipalNameKeyResolver
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.cloud.gateway.route.builder.filters
 import org.springframework.cloud.gateway.route.builder.routes
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
+import org.springframework.security.core.userdetails.User
 
 @SpringBootApplication
 class ReservationClientApplication {
+
+    @Bean
+    fun authentication() = MapReactiveUserDetailsService(
+            User.withDefaultPasswordEncoder().username("jlong").password("pw").roles("USER").build(),
+            User.withDefaultPasswordEncoder().username("rwinch").password("pw").roles("ADMIN", "USER").build()
+
+    )
 
     @Bean
     fun redisRateLimiter() = RedisRateLimiter(5, 7)
