@@ -13,7 +13,7 @@ class ReservationClientApplication {
     @Bean
     fun gateway(rlb: RouteLocatorBuilder) = rlb
             .routes()
-            .route({ routeSpect ->
+            .route(){ routeSpect ->
                 routeSpect
                         .path("/proxy").and().host("*.spring.io")
                         .filters({ filterSpec ->
@@ -22,7 +22,7 @@ class ReservationClientApplication {
                                     .addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
                         })
                         .uri("http://localhost:8080")
-            })
+            }
             .build()
 }
 
