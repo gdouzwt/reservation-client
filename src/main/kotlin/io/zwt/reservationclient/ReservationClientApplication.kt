@@ -16,11 +16,11 @@ class ReservationClientApplication {
             .route { routeSpec ->
                 routeSpec
                         .path("/proxy").and().host("*.spring.io")
-                        .filters({ filterSpec ->
+                        .filters { filterSpec ->
                             filterSpec
                                     .setPath("/reservations")
                                     .addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
-                        })
+                        }
                         .uri("http://localhost:8080")
             }
             .build()
