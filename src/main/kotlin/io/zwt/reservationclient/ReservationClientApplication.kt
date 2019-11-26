@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
+import org.springframework.cloud.gateway.route.builder.filters
 import org.springframework.cloud.gateway.route.builder.routes
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
@@ -16,18 +17,13 @@ class ReservationClientApplication {
 
         route {
             path("/proxy") and host("*.spring.io")
+            filters {
+                setPath("/reservations")
+                addRequestHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+            }
+            uri("http://localhost:8080")
         }
     }
-            .route { it
-                    .path("/proxy").and().host("*.spring.io")
-                        .filters {
-                            it
-                                    .setPath("/reservations")
-                                    .addResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
-                        }
-                        .uri("http://localhost:8080")
-            }
-            .build()
 }
 
 
