@@ -13,9 +13,8 @@ class ReservationClientApplication {
     @Bean
     fun gateway(rlb: RouteLocatorBuilder) = rlb
             .routes()
-            .route { routeSpec ->
-                routeSpec
-                        .path("/proxy").and().host("*.spring.io")
+            .route { it
+                    .path("/proxy").and().host("*.spring.io")
                         .filters { filterSpec ->
                             filterSpec
                                     .setPath("/reservations")
